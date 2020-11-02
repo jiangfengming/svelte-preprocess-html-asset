@@ -74,7 +74,7 @@ const defaultRules = [
   }
 ];
 
-module.exports = function({ rules, filter } = {}) {
+module.exports = ({ rules, filter } = {}) => {
   rules = defaultRules.concat(rules || []);
 
   function transform(path) {
@@ -88,13 +88,13 @@ module.exports = function({ rules, filter } = {}) {
       !filter || filter(path);
   }
 
-  function replace(content, offset, repl, start, end) {
+  function replace(content, offset, start, end, repl) {
     content = content.slice(0, start + offset) + repl + content.slice(end + offset);
-    offset += repl.length - repl.length;
+    offset += repl.length - (end - start);
     return { content, offset };
   }
 
-  function replaceSrcset(content, offset, srcset, start, end) {
+  function replaceSrcset(content, offset, start, end, srcset) {
     const repl = srcset.replace(/(^\s*|,\s*)([^,\s]+)/g, (match, p1, p2) => {
       if (isLocalPath(p2)) {
         return p1 + transform(p2);
@@ -103,7 +103,7 @@ module.exports = function({ rules, filter } = {}) {
       }
     });
 
-    return replace(content, offset, repl, start, end);
+    return replace(content, offset, start, end, repl);
   }
 
   return {
@@ -132,10 +132,10 @@ module.exports = function({ rules, filter } = {}) {
 
                     if (rule.type === 'src') {
                       if (isLocalPath(val.data)) {
-                        ({ content, offset } = replace(content, offset, transform(val.data), val.start, val.end));
+                        ({ content, offset } = replace(content, offset, val.start, val.end, transform(val.data)));
                       }
                     } else {
-                      ({ content, offset } = replaceSrcset(content, offset, val.data, val.start, val.end));
+                      ({ content, offset } = replaceSrcset(content, offset, val.start, val.end, val.data));
                     }
                   }
                 });

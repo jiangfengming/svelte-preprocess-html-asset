@@ -21,7 +21,7 @@
   },
   "homepage": "https://github.com/jiangfengming/svelte-html-asset-preprocessor#readme",
   "peerDependencies": {
-    "svelte": "^3.29.4"
+    "svelte": ">=3"
   },
   "devDependencies": {
     "eslint": "^7.12.1",
