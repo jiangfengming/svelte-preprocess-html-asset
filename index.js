@@ -108,46 +108,54 @@ module.exports = ({ rules, filter } = {}) => {
 
   return {
     markup({ content }) {
-      const ast = svelte.parse(content);
+      const regex = new RegExp(`<(${[...new Set(rules.map(rule => rule.tag))].join('|')})\\s+[^>]+>`, 'gi');
+      const copy = content;
+      let match;
+      let offset = 0;
 
-      if (ast.html) {
-        let offset = 0;
+      while ((match = regex.exec(copy)) !== null) {
+        const tag = match[0];
+        const base = match.index;
 
-        svelte.walk(ast.html, {
-          enter(node) {
-            if (node.type === 'Element') {
-              const rulesOfTag = rules.filter(rule => rule.tag === node.name);
+        try {
+          const ast = svelte.parse(tag);
+          const node = ast.html.children[0];
+          const rulesOfTag = rules.filter(rule => rule.tag === node.name);
 
-              if (rulesOfTag.length) {
-                node.attributes.forEach(attr => {
-                  const rule = rulesOfTag.find(rule => rule.attribute === attr.name);
+          if (rulesOfTag.length) {
+            node.attributes.forEach(attr => {
+              const rule = rulesOfTag.find(rule => rule.attribute === attr.name);
 
-                  if (
-                    rule &&
-                    attr.value instanceof Array &&
-                    attr.value.length === 1 &&
-                    attr.value[0].type === 'Text'
-                  ) {
-                    const val = attr.value[0];
+              if (
+                rule &&
+                attr.value instanceof Array &&
+                attr.value.length === 1 &&
+                attr.value[0].type === 'Text'
+              ) {
+                const val = attr.value[0];
 
-                    if (rule.type === 'src') {
-                      if (isLocalPath(val.data)) {
-                        ({ content, offset } = replace(content, offset, val.start, val.end, transform(val.data)));
-                      }
-                    } else {
-                      ({ content, offset } = replaceSrcset(content, offset, val.start, val.end, val.data));
-                    }
+                if (rule.type === 'src') {
+                  if (isLocalPath(val.data)) {
+                    ({ content, offset } = replace(
+                      content,
+                      offset,
+                      val.start + base,
+                      val.end + base,
+                      transform(val.data))
+                    );
                   }
-                });
+                } else {
+                  ({ content, offset } = replaceSrcset(content, offset, val.start + base, val.end + base, val.data));
+                }
               }
-            }
+            });
           }
-        });
+        } catch (e) {
+          // nop
+        }
       }
 
-      return {
-        code: content
-      };
+      return { code: content };
     }
   };
 };

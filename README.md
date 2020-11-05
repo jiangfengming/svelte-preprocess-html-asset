@@ -120,7 +120,7 @@ filter(path) -> Boolean
 Filter the path. Return `true` to transform, or return `false` to skip the path.
 
 
-### Transform css url()
+## Transform css url()
 Use https://github.com/canadaduane/snowpack-plugin-relative-css-urls
 
 ## License
