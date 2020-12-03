@@ -24,7 +24,7 @@
     "svelte": ">=3"
   },
   "devDependencies": {
-    "eslint": "^7.12.1",
+    "eslint": "^7.14.0",
     "eslint-config-enough": "^0.6.0",
     "eslint-plugin-ext": "^0.1.0"
   }

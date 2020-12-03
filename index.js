@@ -108,54 +108,68 @@ module.exports = ({ rules, filter } = {}) => {
 
   return {
     markup({ content }) {
-      const regex = new RegExp(`<(${[...new Set(rules.map(rule => rule.tag))].join('|')})\\s+[^>]+>`, 'gi');
-      const copy = content;
-      let match;
-      let offset = 0;
+      let scriptBlock, scriptMark, styleBlock, styleMark;
 
-      while ((match = regex.exec(copy)) !== null) {
-        const tag = match[0];
-        const base = match.index;
+      content = content
+        .replace(/<script[\s\S]*<\/script>/, s => {
+          scriptBlock = s;
+          scriptMark = `<!--${Math.random()}${Math.random()}${Math.random()}${Math.random()}-->`;
+          return scriptMark;
+        })
+        .replace(/<style[\s\S]*<\/style>/, s => {
+          styleBlock = s;
+          styleMark = `<!--${Math.random()}${Math.random()}${Math.random()}${Math.random()}-->`;
+          return styleMark;
+        });
 
-        try {
-          const ast = svelte.parse(tag);
-          const node = ast.html.children[0];
-          const rulesOfTag = rules.filter(rule => rule.tag === node.name);
+      const ast = svelte.parse(content);
 
-          if (rulesOfTag.length) {
-            node.attributes.forEach(attr => {
-              const rule = rulesOfTag.find(rule => rule.attribute === attr.name);
+      if (ast.html) {
+        let offset = 0;
 
-              if (
-                rule &&
-                attr.value instanceof Array &&
-                attr.value.length === 1 &&
-                attr.value[0].type === 'Text'
-              ) {
-                const val = attr.value[0];
+        svelte.walk(ast.html, {
+          enter(node) {
+            if (node.type === 'Element') {
+              const rulesOfTag = rules.filter(rule => rule.tag === node.name);
 
-                if (rule.type === 'src') {
-                  if (isLocalPath(val.data)) {
-                    ({ content, offset } = replace(
-                      content,
-                      offset,
-                      val.start + base,
-                      val.end + base,
-                      transform(val.data))
-                    );
+              if (rulesOfTag.length) {
+                node.attributes.forEach(attr => {
+                  const rule = rulesOfTag.find(rule => rule.attribute === attr.name);
+
+                  if (
+                    rule &&
+                    attr.value instanceof Array &&
+                    attr.value.length === 1 &&
+                    attr.value[0].type === 'Text'
+                  ) {
+                    const val = attr.value[0];
+
+                    if (rule.type === 'src') {
+                      if (isLocalPath(val.data)) {
+                        ({ content, offset } = replace(content, offset, val.start, val.end, transform(val.data)));
+                      }
+                    } else {
+                      ({ content, offset } = replaceSrcset(content, offset, val.start, val.end, val.data));
+                    }
                   }
-                } else {
-                  ({ content, offset } = replaceSrcset(content, offset, val.start + base, val.end + base, val.data));
-                }
+                });
               }
-            });
+            }
           }
-        } catch (e) {
-          // nop
+        });
+
+        if (scriptBlock) {
+          content = content.replace(scriptMark, scriptBlock);
+        }
+
+        if (styleBlock) {
+          content = content.replace(styleMark, styleBlock);
         }
       }
 
-      return { code: content };
+      return {
+        code: content
+      };
     }
   };
 };

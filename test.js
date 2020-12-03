@@ -1,7 +1,12 @@
+
 const preprocessor = require('./index.js');
 
 const content = `
-<img src="./1.png">
+<script>
+const foo = 1;
+</script>
+
+<img on:click={() => console.log('click')} src="./1.png">
 <img src="/2.png">
 
 <img srcset="elva-fairy-480w.jpg 480w,
