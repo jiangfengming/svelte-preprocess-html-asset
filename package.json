@@ -1,5 +1,5 @@
 {
-  "name": "svelte-html-asset-preprocessor",
+  "name": "svelte-preprocess-html-asset",
   "version": "0.1.3",
   "description": "Transform html asset relative path. Works with snowpack & webpack 5.",
   "main": "index.js",
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jiangfengming/svelte-html-asset-preprocessor.git"
+    "url": "git+https://github.com/jiangfengming/svelte-preprocess-html-asset.git"
   },
   "keywords": [
     "svelte",
@@ -17,15 +17,15 @@
   "author": "Jiang Fengming",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/jiangfengming/svelte-html-asset-preprocessor/issues"
+    "url": "https://github.com/jiangfengming/svelte-preprocess-html-asset/issues"
   },
-  "homepage": "https://github.com/jiangfengming/svelte-html-asset-preprocessor#readme",
+  "homepage": "https://github.com/jiangfengming/svelte-preprocess-html-asset#readme",
   "peerDependencies": {
     "svelte": ">=3"
   },
   "devDependencies": {
-    "eslint": "^7.14.0",
-    "eslint-config-enough": "^0.6.0",
+    "eslint": "^7.17.0",
+    "eslint-config-enough": "^0.7.0",
     "eslint-plugin-ext": "^0.1.0"
   }
 }

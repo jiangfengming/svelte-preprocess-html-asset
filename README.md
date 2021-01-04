@@ -1,4 +1,4 @@
-# svelte-html-asset-preprocessor
+# svelte-preprocess-html-asset
 Transform html asset relative path. It works with snowpack & webpack 5.
 
 e.g.
@@ -17,11 +17,11 @@ after:
 svelte.config.js:
 
 ```js
-const htmlAssetPreprocessor = require('svelte-html-asset-preprocessor');
+const preprocessHtmlAsset = require('svelte-preprocess-html-asset');
 
 module.exports = {
   preprocess: [
-    htmlAssetPreprocessor()
+    preprocessHtmlAsset()
   ]
 };
 ```
@@ -29,7 +29,7 @@ module.exports = {
 ## Options
 
 ```js
-htmlAssetPreprocessor({ rules, filter })
+preprocessHtmlAsset({ rules, filter })
 ```
 
 ### rules
