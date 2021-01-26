@@ -1,5 +1,5 @@
 # svelte-preprocess-html-asset
-Transform html asset relative path. It works with snowpack & webpack 5.
+Transform html asset relative path. It works with vite, snowpack & webpack 5.
 
 e.g.
 
@@ -10,7 +10,7 @@ before:
 
 after:
 ```html
-<img src="{new URL('foo.png', import.meta.url)}">
+<img src="{new URL('foo.png', import.meta.url).href}">
 ```
 
 ## Usage

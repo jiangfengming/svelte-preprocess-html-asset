@@ -78,7 +78,7 @@ module.exports = ({ rules, filter } = {}) => {
   rules = defaultRules.concat(rules || []);
 
   function transform(path) {
-    return `{new URL('${path}', import.meta.url)}`;
+    return `{new URL('${path}', import.meta.url).href}`;
   }
 
   function isLocalPath(path) {
