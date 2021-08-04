@@ -85,7 +85,7 @@ module.exports = ({ rules, filter } = {}) => {
     return !path.startsWith('http:') &&
       !path.startsWith('https:') &&
       !path.startsWith('//') &&
-      !filter || filter(path);
+      (!filter || filter(path));
   }
 
   function replace(content, offset, start, end, repl) {
