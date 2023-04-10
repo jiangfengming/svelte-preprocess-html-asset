@@ -1,6 +1,6 @@
 {
   "name": "svelte-preprocess-html-asset",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Transform html asset relative path. Works with snowpack & webpack 5.",
   "main": "index.js",
   "scripts": {
