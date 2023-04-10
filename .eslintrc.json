@@ -1,17 +1,10 @@
 {
   "extends": [
-    "enough"
+    "eslint:recommended"
   ],
 
   "env": {
-    "node": true
-  },
-
-  "plugins": [
-    "ext"
-  ],
-
-  "rules": {
-    "ext/lines-between-object-properties": ["error", "always", { "exceptBetweenSingleLines": true }]
+    "node": true,
+    "es2022": true
   }
 }

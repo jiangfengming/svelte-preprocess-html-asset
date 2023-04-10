@@ -108,18 +108,13 @@ module.exports = ({ rules, filter } = {}) => {
 
   return {
     markup({ content }) {
-      let scriptBlock, scriptMark, styleBlock, styleMark;
+      const replacements = [];
 
       content = content
-        .replace(/<script[\s\S]*<\/script>/, s => {
-          scriptBlock = s;
-          scriptMark = `<!--${Math.random()}${Math.random()}${Math.random()}${Math.random()}-->`;
-          return scriptMark;
-        })
-        .replace(/<style[\s\S]*<\/style>/, s => {
-          styleBlock = s;
-          styleMark = `<!--${Math.random()}${Math.random()}${Math.random()}${Math.random()}-->`;
-          return styleMark;
+        .replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/g, s => {
+          const p = `<!--${Math.random()}${Math.random()}-->`;
+          replacements.push([p, s]);
+          return p;
         });
 
       const ast = svelte.parse(content);
@@ -158,12 +153,10 @@ module.exports = ({ rules, filter } = {}) => {
           }
         });
 
-        if (scriptBlock) {
-          content = content.replace(scriptMark, scriptBlock);
-        }
-
-        if (styleBlock) {
-          content = content.replace(styleMark, styleBlock);
+        if (replacements.length) {
+          replacements.forEach(([p, s]) => {
+            content = content.replace(p, s);
+          });
         }
       }
 

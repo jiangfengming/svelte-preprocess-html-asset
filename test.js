@@ -2,9 +2,13 @@
 const preprocessor = require('./index.js');
 
 const content = `
-<script>
-const foo = 1;
+<script lang="ts">
+  const foo: number = 1;
 </script>
+
+<svelte:head>
+  <script src="foo.js"></script>
+</svelte:head>
 
 <img on:click={() => console.log('click')} src="./1.png">
 <img src="/2.png">
